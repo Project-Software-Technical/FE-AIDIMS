@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Kỹ thuật viên - AIDIMS</title>
+  <link rel="stylesheet" href="../Technician/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="layout">
+    <header>
+      <h1>Hệ thống Kỹ thuật viên - AIDIMS</h1>
+    </header>
+
+    <div class="main-container">
+      <aside class="sidebar">
+        <div class="doctor-info">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlRM2-AldpZgaraCXCnO5loktGi0wGiNPydQ&s" class="doctor-avatar" alt="KTV">
+          <h3>KT. Trần Lý</h3>
+
+    <div class="info-group">
+      <p><strong>Ngày sinh:</strong> 10/03/1980</p>
+      <p><strong>Giới tính:</strong> Nam</p>
+      <p><strong>Địa chỉ:</strong> 123 Lý Thường Kiệt, Hà Nội</p>
+      <p><strong>SĐT:</strong> 0903 123 456</p>
+      <p><strong>Email:</strong> nguyenvana@example.com</p>
+      <p><strong>Chức vụ:</strong> Kỹ thuật viên</p>
+    </div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <h2>Danh sách yêu cầu chụp ảnh DICOM</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Bệnh nhân</th>
+              <th>Ngày sinh</th>
+              <th>Phòng ban</th>
+              <th>Bác sĩ</th>
+              <th>Loại chụp</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="requestTable"></tbody>
+        </table>
+      </main>
+    </div>
+
+    <footer>
+      &copy; 2024 Hệ thống DICOM AI - Bệnh viện ABC
+    </footer>
+  </div>
+
+  <div id="uploadModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h3>Tải hình ảnh DICOM</h3>
+      <form id="uploadForm">
+        <label>Chọn file DICOM:</label>
+        <input type="file" id="dicomFile" accept=".dcm" required>
+        <label>Ghi chú (nếu có):</label>
+        <input type="text" id="note">
+        <div class="btn-group">
+          <button type="submit" class="save-btn">Tải lên</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="technician.js"></script>
+
+  <!-- Modal xem ảnh -->
+  <div id="viewModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeViewModal()">&times;</span>
+      <h3>Hình ảnh DICOM</h3>
+      <img id="dicomPreview" src="" alt="Ảnh DICOM" style="width:100%; max-height:300px; object-fit:contain; margin-bottom:10px;">
+      <p><strong>Ghi chú:</strong> <span id="dicomNote"></span></p>
+      <p><strong>Chất lượng ảnh:</strong> <span id="dicomQuality"></span></p>
+    </div>
+  </div>
+
+</body>
+</html>

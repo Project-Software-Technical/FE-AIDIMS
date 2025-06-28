@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý ảnh DICOM</title>
+  <link rel="stylesheet" href="../Technician/style.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+</head>
+<body>
+  <div class="layout">
+    <header>
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <a href="../Technician/index.html" class="back-button" style="display: flex; align-items: center;">
+          <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="white">
+            <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          </svg>
+        </a>
+        <h1 style="flex: 1; text-align: center; margin-right: 40px;">Quản lý ảnh DICOM</h1>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <aside class="sidebar">
+        <div class="doctor-info">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlRM2-AldpZgaraCXCnO5loktGi0wGiNPydQ&s" class="doctor-avatar" alt="KTV">
+          <h3>KT. Trần Lý</h3>
+          <div class="info-group">
+            <p><strong>Ngày sinh:</strong> 10/03/1980</p>
+            <p><strong>Giới tính:</strong> Nam</p>
+            <p><strong>Địa chỉ:</strong> 123 Lý Thường Kiệt, Hà Nội</p>
+            <p><strong>SĐT:</strong> 0903 123 456</p>
+            <p><strong>Email:</strong> nguyenvana@example.com</p>
+            <p><strong>Chức vụ:</strong> Kỹ thuật viên</p>
+          </div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <h2>Thông tin bệnh nhân</h2>
+<div id="patientInfo" style="font-weight: bold; margin-bottom: 20px;"></div>
+
+        <h3>Danh sách ảnh DICOM</h3>
+        <div id="imageList" class="image-list"></div>
+
+        <h3>Thêm ảnh mới</h3>
+        <form id="uploadForm" class="upload-form">
+          <input type="file" id="dicomImage" accept="image/*" required />
+          <input type="text" id="imageNote" placeholder="Ghi chú ảnh" required />
+          <select id="imageQuality" required>
+            <option value="">Chọn chất lượng</option>
+            <option value="Tốt">Tốt</option>
+            <option value="Trung bình">Trung bình</option>
+            <option value="Kém">Kém</option>
+          </select>
+          <button type="submit" class="upload-btn">Tải lên</button>
+        </form>
+      </main>
+    </div>
+
+    <footer>
+      &copy; 2024 Hệ thống DICOM AI - Bệnh viện ABC
+    </footer>
+  </div>
+
+  <script>
+    let patients = JSON.parse(localStorage.getItem("patients")) || [];
+    const select = document.getElementById("patientSelect");
+    const form = document.getElementById("uploadForm");
+    const imageList = document.getElementById("imageList");
+
+    // Lọc bệnh nhân đã yêu cầu chụp
+    const eligiblePatients = patients.filter(p => p.dicomRequested);
+
+    // Render danh sách bệnh nhân
+    select.innerHTML = '<option value="">-- Chọn bệnh nhân --</option>';
+    eligiblePatients.forEach((p, i) => {
+      const option = document.createElement("option");
+      option.value = i;
+      option.textContent = `${p.name} - ${p.dob}`;
+      select.appendChild(option);
+    });
+
+    select.addEventListener("change", () => {
+      renderImages();
+    });
+
+    function renderImages() {
+      const index = select.value;
+      imageList.innerHTML = "";
+      if (index === "") return;
+
+      const p = eligiblePatients[index];
+      if (!p.dicomImages || p.dicomImages.length === 0) {
+        imageList.innerHTML = "<p style='color: gray;'>Chưa có ảnh DICOM nào</p>";
+        return;
+      }
+
+      p.dicomImages.forEach((img, idx) => {
+        const card = document.createElement("div");
+        card.className = "image-card";
+        card.innerHTML = `
+          <img src="${img.data}" alt="DICOM">
+          <p><strong>Ghi chú:</strong> ${img.note}</p>
+          <p><strong>Chất lượng:</strong> ${img.quality}</p>
+          <button onclick="deleteImage(${index}, ${idx})">Xóa</button>
+        `;
+        imageList.appendChild(card);
+      });
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const patientIndex = select.value;
+      if (patientIndex === "") {
+        alert("Vui lòng chọn bệnh nhân!");
+        return;
+      }
+
+      const file = document.getElementById("dicomImage").files[0];
+      const note = document.getElementById("imageNote").value;
+      const quality = document.getElementById("imageQuality").value;
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        const imgObj = { data: reader.result, note, quality };
+        const patient = eligiblePatients[patientIndex];
+        if (!patient.dicomImages) patient.dicomImages = [];
+        patient.dicomImages.push(imgObj);
+
+        // Cập nhật bảng patients
+        const allIndex = patients.findIndex(p => p.name === patient.name && p.dob === patient.dob);
+        if (allIndex !== -1) patients[allIndex] = patient;
+
+        localStorage.setItem("patients", JSON.stringify(patients));
+        alert("Tải ảnh DICOM thành công!");
+        form.reset();
+        renderImages();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    window.deleteImage = function(patientIdx, imageIdx) {
+      const p = eligiblePatients[patientIdx];
+      if (!p || !p.dicomImages) return;
+
+      if (confirm("Bạn chắc chắn muốn xóa ảnh này?")) {
+        p.dicomImages.splice(imageIdx, 1);
+        const fullIdx = patients.findIndex(x => x.name === p.name && x.dob === p.dob);
+        if (fullIdx !== -1) patients[fullIdx] = p;
+        localStorage.setItem("patients", JSON.stringify(patients));
+        renderImages();
+      }
+    }
+  </script>
+  <script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const index = parseInt(urlParams.get("index"));
+  const patients = JSON.parse(localStorage.getItem("patients")) || [];
+  const currentPatient = patients[index];
+
+  if (!currentPatient) {
+    alert("Không tìm thấy bệnh nhân!");
+    window.location.href = "index.html";
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Hiển thị thông tin bệnh nhân
+    document.getElementById("patientInfo").innerText =
+      `${currentPatient.name} - ${currentPatient.dob}`;
+
+    // Hiển thị danh sách ảnh
+    renderImageList();
+
+    // Xử lý form tải ảnh
+    document.getElementById("uploadForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const fileInput = document.getElementById("dicomImage");
+      const note = document.getElementById("imageNote").value;
+      const quality = document.getElementById("imageQuality").value;
+
+      if (!fileInput.files[0]) {
+        alert("Vui lòng chọn ảnh!");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        const newImage = {
+          data: reader.result,
+          note,
+          quality
+        };
+
+        if (!currentPatient.dicomImages) currentPatient.dicomImages = [];
+        currentPatient.dicomImages.push(newImage);
+
+        currentPatient.dicomStatus = "Đã tải DICOM";
+        localStorage.setItem("patients", JSON.stringify(patients));
+
+        renderImageList();
+        document.getElementById("uploadForm").reset();
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    });
+  });
+
+  function renderImageList() {
+    const container = document.getElementById("imageList");
+    container.innerHTML = "";
+
+    if (!currentPatient.dicomImages || currentPatient.dicomImages.length === 0) {
+      container.innerHTML = "<p>Chưa có ảnh nào.</p>";
+      return;
+    }
+
+    currentPatient.dicomImages.forEach((img, i) => {
+      const card = document.createElement("div");
+      card.className = "image-card";
+      card.innerHTML = `
+        <img src="${img.data}" alt="DICOM Image">
+        <p><strong>Ghi chú:</strong> ${img.note}</p>
+        <p><strong>Chất lượng:</strong> ${img.quality}</p>
+        <button onclick="deleteImage(${i})">Xóa ảnh</button>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function deleteImage(indexToDelete) {
+    if (confirm("Bạn chắc chắn muốn xóa ảnh này?")) {
+      currentPatient.dicomImages.splice(indexToDelete, 1);
+      localStorage.setItem("patients", JSON.stringify(patients));
+      renderImageList();
+    }
+  }
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const index = parseInt(urlParams.get("index"));
+    const patients = JSON.parse(localStorage.getItem("patients")) || [];
+    const currentPatient = patients[index];
+
+    if (!currentPatient) {
+      alert("Không tìm thấy bệnh nhân!");
+      window.location.href = "index.html";
+      return;
+    }
+
+    // ✅ Hiển thị thông tin bệnh nhân
+    const patientInfoDiv = document.getElementById("patientInfo");
+    patientInfoDiv.innerText = `${currentPatient.name} - ${currentPatient.dob}`;
+
+    // ✅ Xử lý form upload
+    document.getElementById("uploadForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const fileInput = document.getElementById("dicomImage");
+      const note = document.getElementById("imageNote").value;
+      const quality = document.getElementById("imageQuality").value;
+
+      if (!fileInput.files[0]) {
+        alert("Vui lòng chọn ảnh!");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        const newImage = {
+          data: reader.result,
+          note,
+          quality
+        };
+
+        if (!currentPatient.dicomImages) currentPatient.dicomImages = [];
+        currentPatient.dicomImages.push(newImage);
+        currentPatient.dicomStatus = "Đã tải DICOM";
+
+        patients[index] = currentPatient;
+        localStorage.setItem("patients", JSON.stringify(patients));
+        renderImageList();
+        document.getElementById("uploadForm").reset();
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    });
+
+    // ✅ Hiển thị danh sách ảnh
+    function renderImageList() {
+      const container = document.getElementById("imageList");
+      container.innerHTML = "";
+
+      if (!currentPatient.dicomImages || currentPatient.dicomImages.length === 0) {
+        container.innerHTML = "<p>Chưa có ảnh nào.</p>";
+        return;
+      }
+
+      currentPatient.dicomImages.forEach((img, i) => {
+        const card = document.createElement("div");
+        card.className = "image-card";
+        card.innerHTML = `
+          <img src="${img.data}" alt="DICOM Image">
+          <p><strong>Ghi chú:</strong> ${img.note}</p>
+          <p><strong>Chất lượng:</strong> ${img.quality}</p>
+          <button onclick="deleteImage(${i})">Xóa ảnh</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    window.deleteImage = function(indexToDelete) {
+      if (confirm("Bạn chắc chắn muốn xóa ảnh này?")) {
+        currentPatient.dicomImages.splice(indexToDelete, 1);
+        patients[index] = currentPatient;
+        localStorage.setItem("patients", JSON.stringify(patients));
+        renderImageList();
+      }
+    };
+
+    renderImageList();
+  });
+</script>
+
+
+</body>
+</html>
