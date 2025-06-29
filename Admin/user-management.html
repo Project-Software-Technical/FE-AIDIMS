@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quản lý Người dùng - AIDIMS</title>
+  <!-- Bootstrap 3 -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <style>
+    body { background-color: #fafafa; }
+    .wrapper { padding-top: 60px; }
+    .pagination-wrapper { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="index.html">AIDIMS - Admin</a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="../index.html">Đăng xuất</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container wrapper">
+    <h3 class="text-center">Quản lý Người dùng</h3>
+
+    <table class="table table-bordered table-striped" id="userTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>User ID</th>
+          <th>Staff ID</th>
+          <th>Role ID</th>
+          <th>Email</th>
+          <th>Ngày tạo</th>
+          <th>Trạng thái</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="pagination-wrapper text-center">
+      <ul class="pagination" id="pagination"></ul>
+    </div>
+  </div>
+
+  <!-- jQuery & Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="user-management.js"></script>
+</body>
+</html> 

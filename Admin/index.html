@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trang Quản trị - AIDIMS</title>
+  <!-- Bootstrap 3 -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #fafafa;
+    }
+    .dashboard-wrapper {
+      padding-top: 60px;
+    }
+    .panel-icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">AIDIMS - Admin</a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="../index.html">Đăng xuất</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container dashboard-wrapper">
+    <h2 class="text-center">Bảng điều khiển Quản trị viên</h2>
+    <div class="row" style="margin-top: 30px;">
+      <div class="col-sm-6 col-md-4">
+        <a href="user-management.html" style="text-decoration:none;color:inherit;">
+          <div class="panel panel-primary text-center">
+            <div class="panel-body">
+              <span class="glyphicon glyphicon-user panel-icon"></span>
+              <h4>Quản lý Người dùng</h4>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-sm-6 col-md-4">
+        <div class="panel panel-success text-center">
+          <div class="panel-body">
+            <span class="glyphicon glyphicon-briefcase panel-icon"></span>
+            <h4>Quản lý Vai trò</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4">
+        <div class="panel panel-info text-center">
+          <div class="panel-body">
+            <span class="glyphicon glyphicon-list-alt panel-icon"></span>
+            <h4>Báo cáo Hệ thống</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4">
+        <a href="staff-management.html" style="text-decoration:none;color:inherit;">
+          <div class="panel panel-warning text-center">
+            <div class="panel-body">
+              <span class="glyphicon glyphicon-education panel-icon"></span>
+              <h4>Quản lý Nhân viên</h4>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Thêm các widget khác tại đây -->
+  </div>
+
+  <!-- jQuery & Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</body>
+</html> 
